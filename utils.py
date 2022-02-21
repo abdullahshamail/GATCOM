@@ -177,4 +177,53 @@ def donor_acceptor_dist (atom1_traj, atom2_traj, total_frame ):
             
             donor_atom_index = np.append(donor_atom_index, index)
         
-    return donor_acceptor_timestep, donor_atom_index    
+    return donor_acceptor_timestep, donor_atom_index
+
+def loadData(link):
+    l = np.loadtxt(link)
+    data = l.reshape(l.shape[0], l.shape[1] // 3 , 3)
+    
+    return data
+
+def magnitude(vector):
+    return np.linalg.norm(vector)
+
+def numerator(currentPoint, basePointA, basePointB):
+    xp, yp, zp = currentPoint
+    xa, ya, za = basePointA
+    xb, yb, zb = basePointB
+    
+    return magnitude(
+            np.cross(
+                    [xp - xa, yp - ya, zp - za], 
+                    [xb - xa, yb - ya, zb - za]
+                )
+            )
+
+def denominator(basePointA, basePointB):
+    xa, ya, za = basePointA
+    xb, yb, zb = basePointB
+    
+    return magnitude([xb - xa, yb - ya, zb - za])
+
+def giveDistance(point, a, b):
+    return numerator(point, a, b) / denominator(a, b)
+
+
+def spm3d(data, epsilon, location):
+    drugTraj = data[:,location,:]
+
+    a = drugTraj[0]
+    b = drugTraj[-1]
+
+    newTrajectory = np.array([[a[0], a[1], a[2], 0]])
+
+    for i in range(1, len(drugTraj) - 1):
+        p = drugTraj[i]
+        distance = giveDistance(p, a, b)
+        if distance > epsilon:
+            newTrajectory = np.append(newTrajectory, np.array([[p[0], p[1], p[2], i]]), axis=0)
+            a = p
+    newTrajectory = np.append(newTrajectory, np.array([[b[0], b[1], b[2], len(drugTraj) - 1]]), axis=0)
+
+    return newTrajectory

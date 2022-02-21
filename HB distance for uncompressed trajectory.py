@@ -1,11 +1,5 @@
 import numpy as np
-from utils import donor_acceptor_dist
-
-def loadData(link):
-    l = np.loadtxt(link)
-    data = l.reshape(l.shape[0], l.shape[1] // 3 , 3)
-    
-    return data
+from utils import donor_acceptor_dist, loadData
 
 if __name__ == "__main__":
     oxygen_location = r"C:\Users\ashamail\Desktop\data\oxygenTraj.txt"
