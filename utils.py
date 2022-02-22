@@ -1,5 +1,6 @@
 import numpy as np
 import plotly.graph_objects as go
+from rdp import rdp
 
 def doInterpolation(data):
     for i in range(data.shape[0] - 1):
@@ -227,3 +228,37 @@ def spm3d(data, epsilon, location):
     newTrajectory = np.append(newTrajectory, np.array([[b[0], b[1], b[2], len(drugTraj) - 1]]), axis=0)
 
     return newTrajectory
+
+def performRDP(data, epsilon, location):
+    rdpData = rdp(data[:,location,:], epsilon=epsilon, return_mask=True)
+    
+    myData = []
+
+    for i, truth in enumerate(rdpData):
+        if truth:
+
+            temp = list(np.append(data[:,location,:][i], i))
+            myData.append(temp)
+    myData = np.array(myData)
+    return myData
+
+def rdpOxygen(data, epsilon):
+    rdpData = rdp(data, epsilon=epsilon, return_mask=True)
+    myData = []
+    for i, truth in enumerate(rdpData):
+        if truth:
+            temp = list(np.append(data[i,:], i))
+            myData.append(temp)
+    myData = np.array(myData)
+    return myData
+
+def giveTimesteps(o, n, timesteps, epsilonadjustment):
+    times = []
+    for i, t in enumerate(timesteps):
+        xo, yo, zo = o[i]
+        xn, yn, zn = n[i]
+        res = distance_periodicity(xo, yo, zo, xn, yn, zn)
+        if res[0] <= 3.5 + 2*float(epsilonadjustment):
+            times.append(t)
+        
+    return np.array(times)
