@@ -271,7 +271,7 @@ def polymer_surface_plane (polymer_atoms):
     return polymer_plane_constant
 
 
-def perpendicular_distance (center_of_mass_traj, total_frame, polymer_plane_constant):
+def perpendicular_distance (center_of_mass_traj, total_frame, polymer_plane_constant = 44):
     
     perpendicular_distance = np.empty((0,1), dtype=float, order='C')
     
