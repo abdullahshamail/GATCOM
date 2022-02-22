@@ -134,7 +134,7 @@ def distance_periodicity (X1,Y1,Z1,X2,Y2,Z2):
     
     return euclidean_distance, x_coord_diff, y_coord_diff, z_coord_diff
 
-def donor_acceptor_dist (atom1_traj, atom2_traj, total_frame ):
+def donor_acceptor_dist (atom1_traj, atom2_traj, total_frame, hbond_threshold = 3.5):
     
     """
         Calculate the time frames and donor atoms where donor acceptor distance is within 3.5A
@@ -168,18 +168,18 @@ def donor_acceptor_dist (atom1_traj, atom2_traj, total_frame ):
     
         atom2_traj_x, atom2_traj_y, atom2_traj_z = split_xyz (atom2_traj_xyz)
     
-        donor_acceptor_dist,x_coord_diff, _, _ = distance_periodicity (atom1_traj_xyz[0], atom1_traj_xyz[1],atom1_traj_xyz[2], atom2_traj_x, atom2_traj_y, atom2_traj_z)
+        donor_acceptor_dist,_ , _, _ = distance_periodicity (atom1_traj_xyz[0], atom1_traj_xyz[1],atom1_traj_xyz[2], atom2_traj_x, atom2_traj_y, atom2_traj_z)
 
     
-        if min(donor_acceptor_dist) <= 3.5 :
+        if min(donor_acceptor_dist) <= hbond_threshold :
             
             index = np.argmin(donor_acceptor_dist) 
+            donor_atom_index = np.append(donor_atom_index, index)
         
             donor_acceptor_timestep = np.append(donor_acceptor_timestep, frame_num)
             
-            donor_atom_index = np.append(donor_atom_index, index)
-        
     return donor_acceptor_timestep, donor_atom_index
+
 
 def loadData(link):
     l = np.loadtxt(link)
