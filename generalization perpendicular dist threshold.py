@@ -1,4 +1,5 @@
 import numpy as np
+
 from utils import polymer_surface_plane, perpendicular_distance
 
 polymer_atoms_1 =  np.loadtxt(r"C:\Users\mhanowar\Downloads\nitrogen 0-800k\nitrogen200k-0.txt")
