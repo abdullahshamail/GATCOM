@@ -283,3 +283,17 @@ def perpendicular_distance (center_of_mass_traj, total_frame, polymer_plane_cons
         perpendicular_distance = np.append(perpendicular_distance, drug_com_dist)
         
     return perpendicular_distance
+
+def calc_center_of_mass (atomic_mass, xcoords, ycoords, zcoords):
+    
+    xproduct = 0.0
+    yproduct = 0.0
+    zproduct = 0.0
+
+    for i in np.arange(len(atomic_mass)):
+        
+        xproduct = xproduct + atomic_mass[i] * xcoords[i]
+        yproduct = yproduct + atomic_mass[i] * ycoords[i]
+        zproduct = zproduct + atomic_mass[i] * zcoords[i]
+        
+    return xproduct/sum(atomic_mass), yproduct/sum(atomic_mass), zproduct/sum(atomic_mass)
