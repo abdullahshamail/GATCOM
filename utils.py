@@ -262,3 +262,24 @@ def giveTimesteps(o, n, timesteps, epsilonadjustment):
             times.append(t)
         
     return np.array(times)
+
+def polymer_surface_plane (polymer_atoms):
+    
+    polymer_plane_constant = math.ceil(max(polymer_atoms [:,:,2]))
+    
+    return polymer_plane_constant
+
+
+def perpendicular_distance (center_of_mass_traj, total_frame, polymer_plane_constant):
+    
+    perpendicular_distance = np.empty((0,1), dtype=float, order='C')
+    
+    for frame_num in total_frame:
+
+        drug_com_xyz = center_of_mass_traj[frame_num]
+        
+        drug_com_dist = drug_com_xyz[2] - polymer_plane_constant
+        
+        perpendicular_distance = np.append(perpendicular_distance, drug_com_dist)
+        
+    return perpendicular_distance
