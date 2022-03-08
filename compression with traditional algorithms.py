@@ -1,6 +1,7 @@
 import numpy as np
+import pandas as pd
 import os
-from utils import doInterpolation, loadData, spm3d, doInter, performRDP, rdpOxygen, giveTimesteps
+from utils import doInterpolation, loadData, spm3d, doInter, performRDP, rdpOxygen, giveTimesteps, donor_acceptor_dist
 from os.path import join, isfile
 
 if __name__ == "__main__":
@@ -66,29 +67,57 @@ if __name__ == "__main__":
         oxygenData = np.loadtxt(join(savePathInterpolatedData, "oxygenTrajspm3dinterpolated-"+str(e)+".csv"), delimiter=",")
 
         union = np.array([])
+        combinedNitrogens = np.empty((0,4))
         for i in range(216):
             nitrogenData = np.loadtxt(join(savePathInterpolatedData, "nitrogenTrajspm3dinterpolated-"+str(e)+"--"+str(i)+".csv"), delimiter=",")
+            combinedNitrogens = np.append(combinedNitrogens, nitrogenData, axis=0)
+        
+        df = pd.DataFrame(combinedNitrogens)
+        times = np.unique(combinedNitrogens[:,3])
+        nitrogenDict = {}
 
-            oD = oxygenData[nitrogenData[:,3].astype(int)][:,:3]
-            timesteps = nitrogenData[:,3].astype(int)
-            nit = nitrogenData[:,:3]
+        for i in times:
+            nitrogenDict[i] = np.array(df[df[3] == i][[0,1,2]])
+        timesteps = oxygenData[:,3].astype(int)
+        oxygenData = pd.DataFrame(oxygenData)
+        tempOxygen = np.zeros((200000, 3))
+        uniquetimesteps = oxygenData[3].values
 
-            timeSteps = giveTimesteps(oD, nit, timesteps, 0)
-            union = np.union1d(union, timeSteps)
-            np.savetxt("distances for spm epsilon-"+str(e) , union, delimiter=',')
+        for i in uniquetimesteps:
+                xyz = oxygenData[oxygenData[3] == i].values
+                i = int(i)
+                tempOxygen[i][0] = xyz[0][0]
+                tempOxygen[i][1] = xyz[0][1]
+                tempOxygen[i][2] = xyz[0][2]
+        output, _ = donor_acceptor_dist(tempOxygen, nitrogenDict, list(nitrogenDict.keys()))
+        np.savetxt("distances for spm epsilon-"+str(e), output ,delimiter=",")
+
 
     for e in epsilons:
         oxygenData = np.loadtxt(join(savePathInterpolatedData, "oxygenTrajrdpinterpolated-"+str(e)+".csv"), delimiter=",")
 
         union = np.array([])
+        combinedNitrogens = np.empty((0,4))
         for i in range(216):
             nitrogenData = np.loadtxt(join(savePathInterpolatedData, "oxygenTrajrdpinterpolated-"+str(e)+"--"+str(i)+".csv"), delimiter=",")
+            combinedNitrogens = np.append(combinedNitrogens, nitrogenData, axis=0)  
+        df = pd.DataFrame(combinedNitrogens)
+        times = np.unique(combinedNitrogens[:,3])
+        nitrogenDict = {}
 
-            oD = oxygenData[nitrogenData[:,3].astype(int)][:,:3]
-            timesteps = nitrogenData[:,3].astype(int)
-            nit = nitrogenData[:,:3]
+        for i in times:
+            nitrogenDict[i] = np.array(df[df[3] == i][[0,1,2]])
+        timesteps = oxygenData[:,3].astype(int)
+        oxygenData = pd.DataFrame(oxygenData)
+        tempOxygen = np.zeros((200000, 3))
+        uniquetimesteps = oxygenData[3].values
 
-            timeSteps = giveTimesteps(oD, nit, timesteps, 0)
-            union = np.union1d(union, timeSteps)
-            np.savetxt("distances for rdp epsilon-"+str(e) , union, delimiter=',')
+        for i in uniquetimesteps:
+                xyz = oxygenData[oxygenData[3] == i].values
+                i = int(i)
+                tempOxygen[i][0] = xyz[0][0]
+                tempOxygen[i][1] = xyz[0][1]
+                tempOxygen[i][2] = xyz[0][2]
+        output, _ = donor_acceptor_dist(tempOxygen, nitrogenDict, list(nitrogenDict.keys()))
+        np.savetxt("distances for rdp epsilon-"+str(e) , output, delimiter=',')
 
