@@ -10,7 +10,7 @@ import sys
 if __name__ == "__main__":
     oxygen_location = r"C:\Users\ashamail\Desktop\data\os_200_1.txt"
     nitrogen_location = r"C:\Users\ashamail\Desktop\data\nitrogen200k.txt"
-    hydrogen_location = r"C:\Users\ashamail\Box\Shared Materials_Abdullah_Hasan\ADBIS PAPER_Everything\EXTENSION\Data\hn_200k_0.txt"
+    hydrogen_location = r"C:\Users\ashamail\Box\Shared Materials_Abdullah_Hasan\ADBIS PAPER_Everything\EXTENSION\Data\hn_200k.txt"
     savePathDistances = r"C:\Users\ashamail\Desktop\GATCOM\data\conventional algorithms\distances"
     savePath = r"C:\Users\ashamail\Desktop\GATCOM\data\conventional algorithms"
     savePathInterpolatedTimes = join(savePath, "times")
