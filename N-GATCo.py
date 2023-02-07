@@ -10,7 +10,7 @@ if __name__ == "__main__":
     oxygen = loadData(oxygen_location)
     nitrogen = loadData(nitrogen_location)
 
-    whichCOM = ["OS atom as COM", "True COM"]
+    whichCOM = ["OS atom as COM"]
 
     timeStepsFolder = r"C:\Users\ashamail\OneDrive - Iowa State University\Molecular Simulation Data\Text Data Files\Timesteps using Generalization\RFL1 Timesteps  with Generalization" #these are the timesteps where d_delta < 3.5 
     saveFolder = r"GATCOM"
@@ -20,6 +20,7 @@ if __name__ == "__main__":
         for f in files:
             if f.endswith('.csv'):
                 timesteps = np.loadtxt(join(path, f)).astype(int)
-                a, b = donor_acceptor_dist(oxygen[:,0,:], nitrogen, timesteps)
+                rbmax = 6.49
+                a, b = donor_acceptor_dist(oxygen[:,0,:], nitrogen, timesteps, bond_threshold = 3.5 + rbmax)
                 # np.savetxt(join(saveFolder, typ, f), a, delimiter=",")
                 print(typ, f, a.shape)
